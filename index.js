@@ -1,5 +1,5 @@
 module.exports = {
-  Joint  : require('./lib/joint'),
+  Union  : require('./lib/union'),
   Faucet : require('./lib/faucet'),
   limit  : require('./lib/limit')
 };

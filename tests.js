@@ -1,4 +1,4 @@
-var Joint = require('./index').Joint
+var Union = require('./index').Union
   , limit = require('./index').limit
   , Faucet = require('./index').Faucet
   , Backbone = require('backbone')
@@ -20,7 +20,7 @@ var models = (function() {
 }());
 
 module.exports = {
-  'Joint': {
+  'Union': {
     basics: function() {
       var coll1 = new C();
       var coll2 = new C();
@@ -29,21 +29,21 @@ module.exports = {
       coll1.add(models['second']);
       coll2.add(models['third']);
 
-      var jc = new Joint();
+      var uc = new Union();
 
-      jc.connect(coll1);
-      jc.connect(coll2);
+      uc.connect(coll1);
+      uc.connect(coll2);
 
-      assert(jc.get(1) && jc.get(2) && jc.get(3), 'existing models in source collections should be present');
+      assert(uc.get(1) && uc.get(2) && uc.get(3), 'existing models in source collections should be present');
 
       coll2.add(models['fourth']);
-      assert(jc.get(4), 'adding a model to a source collection should make it present in the Joint');
+      assert(uc.get(4), 'adding a model to a source collection should make it present in the Union');
 
-      jc.disconnect(coll1);
-      assert(!jc.get(1) && !jc.get(2), 'disconnecting a source collection should remove all its members from the Joint');
+      uc.disconnect(coll1);
+      assert(!uc.get(1) && !uc.get(2), 'disconnecting a source collection should remove all its members from the Union');
 
-      jc.disconnectAll();
-      assert(jc.length === 0, 'disconnectingAll should make the Joint empty');
+      uc.disconnectAll();
+      assert(uc.length === 0, 'disconnectingAll should make the Union empty');
     },
 
     fetching: function() {
@@ -52,13 +52,13 @@ module.exports = {
       var fetch1 = coll1.fetch = sinon.spy();
       var fetch2 = coll2.fetch = sinon.spy();
 
-      var jc = new Joint();
-      jc.connect(coll1);
-      jc.connect(coll2);
+      var uc = new Union();
+      uc.connect(coll1);
+      uc.connect(coll2);
 
-      jc.fetch();
+      uc.fetch();
 
-      assert(fetch1.called && fetch2.called, 'running fetch() on a Joint should run fetch() an all source collections'); 
+      assert(fetch1.called && fetch2.called, 'running fetch() on a Union should run fetch() an all source collections'); 
     }
 
   },
@@ -94,12 +94,12 @@ module.exports = {
 
     var coll1 = new CustomCollection,
         coll2 = new CustomCollection,
-        jc = new Joint;
+        uc = new Union;
 
     limit(coll1, 3, { throttle: false });
     limit(coll2, 3, { throttle: false });
-    jc.connect(coll1);
-    jc.connect(coll2);
+    uc.connect(coll1);
+    uc.connect(coll2);
 
     // First two should go once we hit the 3 limit, i.e. 'first' and 'second'
     coll1.add(models['first']);
@@ -116,7 +116,7 @@ module.exports = {
     coll2.add(models['tenth']);
 
     assert(
-      _.intersection(jc.pluck('id'), [ 1, 2, 6, 7 ]).length === 0,
+      _.intersection(uc.pluck('id'), [ 1, 2, 6, 7 ]).length === 0,
       "first two models in each of the source collections shouldn't be in the joint collection"
     );
   },

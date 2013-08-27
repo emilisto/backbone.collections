@@ -3,9 +3,9 @@
 Collection of various tools I've created for working with Backbone
 Collections. Currently including:
 
-- `Joint`: Joining an arbitrary no. of collections into one - adding and
-removing models to connected collections will result in them being added
-or removed to the `Joint` collection.
+- `Union`: A collection that represents the union of an arbitrary number
+of _connected_ collections. Adding and removing models in the connected
+collections will immediately reflect in the Union collection.
 - `Faucet`: Put a faucet on a collection: models aren't added until
 `drain()` is called. A `pending` event is triggered when new models are
 added to the parent collection.
