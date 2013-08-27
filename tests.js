@@ -121,35 +121,52 @@ module.exports = {
     );
   },
 
-  Faucet: function() {
-    var coll = new C();
-    coll.add(models['first']);
-    coll.add(models['second']);
-    coll.add(models['third']);
-    coll.add(models['fourth']);
+  Faucet: {
+    basics: function() {
+      var coll = new C();
+      coll.add(models['first']);
+      coll.add(models['second']);
+      coll.add(models['third']);
+      coll.add(models['fourth']);
 
-    var fc = new Faucet(coll);
+      var fc = new Faucet(coll);
 
-    assert.equal(fc.length, 0, 'floodgate should be empty until its drained');
-    assert.equal(fc.pending(), 4, 'there should be 4 models in the gate');
+      assert.equal(fc.length, 0, 'floodgate should be empty until its drained');
+      assert.equal(fc.pending(), 4, 'there should be 4 models in the gate');
 
-    fc.drain();
-    assert.equal(fc.length, 4, 'floodgate should be empty until its drained');
-    assert.equal(fc.pending(), 0, 'there should be 4 models in the gate');
+      fc.drain();
+      assert.equal(fc.length, 4, 'floodgate should be empty until its drained');
+      assert.equal(fc.pending(), 0, 'there should be 4 models in the gate');
 
-    coll.add(models['fifth']);
-    assert.equal(fc.length, 4);
-    assert.equal(fc.pending(), 1);
+      coll.add(models['fifth']);
+      assert.equal(fc.length, 4);
+      assert.equal(fc.pending(), 1);
 
-    coll.add('sixth');
-    var expected = fc.pending() + fc.length;
-    fc.expel();
-    assert.equal(fc.pending(), expected, 'existing AND pending models should end up in the gate after expelling');
+      coll.add('sixth');
+      var expected = fc.pending() + fc.length;
+      fc.expel();
+      assert.equal(fc.pending(), expected, 'existing AND pending models should end up in the gate after expelling');
 
-    coll.reset();
-    assert.equal(fc.length + fc.pending(), 0, 'resting should remove all models - existing and pending')
+      coll.reset();
+      assert.equal(fc.length + fc.pending(), 0, 'resting should remove all models - existing and pending')
 
-  }
+    },
+    drainCondition: function() {
+
+      var coll = new C;
+      var fc = new Faucet(coll, {
+        drainCondition: function(model) {
+          return model.id <= 5;
+        }
+      });
+
+      coll.add([models['first'], models['second']]);
+      assert.equal(fc.length, 2, 'models for which the drainCondition is true SHOULD be auto-added');
+
+      coll.add([models['eighth'], models['ninth'], models['tenth']]);
+      assert.equal(fc.pending(), 3, 'models for which the drainCondition is false SHOULD NOT be auto-added');
+    },
+  },
 
 };
 
