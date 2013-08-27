@@ -93,6 +93,17 @@ module.exports = {
       );
 
 
+    },
+
+    removal: function() {
+      var coll = new C;
+      var uc = new Union({ remove: false });
+      uc.connect(coll);
+
+      coll.add([models['fourth'], models['third'], models['second']]);
+      coll.remove(4);
+      assert(uc.get(4), 'when removal is set to false, removing models from connected collections doesnt affect the Union collection');
+
     }
 
   },
