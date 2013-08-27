@@ -1,4 +1,5 @@
 module.exports = {
-  JointCollection: require('./lib/jointcollection'),
-  limitCollection: require('./lib/limitcollection')
+  JointCollection     : require('./lib/jointcollection'),
+  FloodgateCollection : require('./lib/floodgate'),
+  limitCollection     : require('./lib/limitcollection')
 };

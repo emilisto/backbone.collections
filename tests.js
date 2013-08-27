@@ -1,5 +1,6 @@
 var JointCollection = require('./index').JointCollection
   , limitCollection = require('./index').limitCollection
+  , FloodgateCollection = require('./index').FloodgateCollection
   , Backbone = require('backbone')
   , _ = require('underscore')
   , assert = require('assert')
@@ -58,11 +59,8 @@ module.exports = {
       jc.fetch();
 
       assert(fetch1.called && fetch2.called, 'running fetch() on a JointCollection should run fetch() an all source collections'); 
-    },
-
-    deferredAddition: function() {
-
     }
+
   },
 
   LimitCollection: function() {
@@ -121,6 +119,36 @@ module.exports = {
       _.intersection(jc.pluck('id'), [ 1, 2, 6, 7 ]).length === 0,
       "first two models in each of the source collections shouldn't be in the joint collection"
     );
+  },
+
+  FloodgateCollection: function() {
+    var coll = new C();
+    coll.add(models['first']);
+    coll.add(models['second']);
+    coll.add(models['third']);
+    coll.add(models['fourth']);
+
+    var fc = new FloodgateCollection(coll);
+
+    assert.equal(fc.length, 0, 'floodgate should be empty until its drained');
+    assert.equal(fc.pending(), 4, 'there should be 4 models in the gate');
+
+    fc.drain();
+    assert.equal(fc.length, 4, 'floodgate should be empty until its drained');
+    assert.equal(fc.pending(), 0, 'there should be 4 models in the gate');
+
+    coll.add(models['fifth']);
+    assert.equal(fc.length, 4);
+    assert.equal(fc.pending(), 1);
+
+    coll.add('sixth');
+    var expected = fc.pending() + fc.length;
+    fc.expel();
+    assert.equal(fc.pending(), expected, 'existing AND pending models should end up in the gate after expelling');
+
+    coll.reset();
+    assert.equal(fc.length + fc.pending(), 0, 'resting should remove all models - existing and pending')
+
   }
 
 };
