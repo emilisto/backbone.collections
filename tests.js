@@ -8,19 +8,21 @@ var JointCollection = require('./index').JointCollection
 
 var C = Backbone.Collection, M = Backbone.Model;
 
+var models = (function() {
+  var names = [
+    'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh',
+    'eighth', 'ninth', 'tenth'
+  ];
+  return _.object(_.map(names, function(name, i) {
+    return [ name, new M({ id: i + 1 }) ];
+  }));
+}());
+
 module.exports = {
   'JointCollection': {
     basics: function() {
       var coll1 = new C();
       var coll2 = new C();
-
-      var models = {
-        'first'  : new M({ id : 1 }),
-        'second' : new M({ id : 2 }),
-        'third'  : new M({ id : 3 }),
-        'fourth' : new M({ id : 4 }),
-        'fifth'  : new M({ id : 5 }),
-      };
 
       coll1.add(models['first']);
       coll1.add(models['second']);
@@ -56,17 +58,14 @@ module.exports = {
       jc.fetch();
 
       assert(fetch1.called && fetch2.called, 'running fetch() on a JointCollection should run fetch() an all source collections'); 
+    },
+
+    deferredAddition: function() {
+
     }
   },
 
   LimitCollection: function() {
-    var models = {
-      'first'  : new M({ id : 1 }),
-      'second' : new M({ id : 2 }),
-      'third'  : new M({ id : 3 }),
-      'fourth' : new M({ id : 4 }),
-      'fifth'  : new M({ id : 5 }),
-    };
     var CustomCollection = C.extend({
       comparator: function(model) { return -model.id; }
     });
@@ -90,13 +89,6 @@ module.exports = {
   },
 
   Combined: function() {
-    var names = [
-      'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh',
-      'eighth', 'ninth', 'tenth'
-    ];
-    var models = _.object(_.map(names, function(name, i) {
-      return [ name, new M({ id: i + 1 }) ];
-    }));
 
     var CustomCollection = C.extend({
       comparator: function(model) { return -model.id; }
