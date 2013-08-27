@@ -1,6 +1,6 @@
-var JointCollection = require('./index').JointCollection
-  , limitCollection = require('./index').limitCollection
-  , FloodgateCollection = require('./index').FloodgateCollection
+var Joint = require('./index').Joint
+  , limit = require('./index').limit
+  , Faucet = require('./index').Faucet
   , Backbone = require('backbone')
   , _ = require('underscore')
   , assert = require('assert')
@@ -20,7 +20,7 @@ var models = (function() {
 }());
 
 module.exports = {
-  'JointCollection': {
+  'Joint': {
     basics: function() {
       var coll1 = new C();
       var coll2 = new C();
@@ -29,7 +29,7 @@ module.exports = {
       coll1.add(models['second']);
       coll2.add(models['third']);
 
-      var jc = new JointCollection();
+      var jc = new Joint();
 
       jc.connect(coll1);
       jc.connect(coll2);
@@ -37,13 +37,13 @@ module.exports = {
       assert(jc.get(1) && jc.get(2) && jc.get(3), 'existing models in source collections should be present');
 
       coll2.add(models['fourth']);
-      assert(jc.get(4), 'adding a model to a source collection should make it present in the JointCollection');
+      assert(jc.get(4), 'adding a model to a source collection should make it present in the Joint');
 
       jc.disconnect(coll1);
-      assert(!jc.get(1) && !jc.get(2), 'disconnecting a source collection should remove all its members from the JointCollection');
+      assert(!jc.get(1) && !jc.get(2), 'disconnecting a source collection should remove all its members from the Joint');
 
       jc.disconnectAll();
-      assert(jc.length === 0, 'disconnectingAll should make the JointCollection empty');
+      assert(jc.length === 0, 'disconnectingAll should make the Joint empty');
     },
 
     fetching: function() {
@@ -52,24 +52,24 @@ module.exports = {
       var fetch1 = coll1.fetch = sinon.spy();
       var fetch2 = coll2.fetch = sinon.spy();
 
-      var jc = new JointCollection();
+      var jc = new Joint();
       jc.connect(coll1);
       jc.connect(coll2);
 
       jc.fetch();
 
-      assert(fetch1.called && fetch2.called, 'running fetch() on a JointCollection should run fetch() an all source collections'); 
+      assert(fetch1.called && fetch2.called, 'running fetch() on a Joint should run fetch() an all source collections'); 
     }
 
   },
 
-  LimitCollection: function() {
+  limit: function() {
     var CustomCollection = C.extend({
       comparator: function(model) { return -model.id; }
     });
 
     var coll = new CustomCollection();
-    limitCollection(coll, 2, { throttle: false });
+    limit(coll, 2, { throttle: false });
     coll.add(models['first']);
     coll.add(models['second']);
     coll.add(models['third']);
@@ -77,7 +77,7 @@ module.exports = {
     assert(!coll.get(1), 'oldest model should have been removed');
 
     var coll = new CustomCollection();
-    limitCollection(coll, 2, { removeFirst: 'new', throttle: false });
+    limit(coll, 2, { removeFirst: 'new', throttle: false });
     coll.add(models['fourth']);
     coll.add(models['third']);
     coll.add(models['second']);
@@ -94,10 +94,10 @@ module.exports = {
 
     var coll1 = new CustomCollection,
         coll2 = new CustomCollection,
-        jc = new JointCollection;
+        jc = new Joint;
 
-    limitCollection(coll1, 3, { throttle: false });
-    limitCollection(coll2, 3, { throttle: false });
+    limit(coll1, 3, { throttle: false });
+    limit(coll2, 3, { throttle: false });
     jc.connect(coll1);
     jc.connect(coll2);
 
@@ -121,14 +121,14 @@ module.exports = {
     );
   },
 
-  FloodgateCollection: function() {
+  Faucet: function() {
     var coll = new C();
     coll.add(models['first']);
     coll.add(models['second']);
     coll.add(models['third']);
     coll.add(models['fourth']);
 
-    var fc = new FloodgateCollection(coll);
+    var fc = new Faucet(coll);
 
     assert.equal(fc.length, 0, 'floodgate should be empty until its drained');
     assert.equal(fc.pending(), 4, 'there should be 4 models in the gate');

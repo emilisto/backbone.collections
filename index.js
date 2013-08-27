@@ -1,5 +1,5 @@
 module.exports = {
-  JointCollection     : require('./lib/jointcollection'),
-  FloodgateCollection : require('./lib/floodgate'),
-  limitCollection     : require('./lib/limitcollection')
+  Joint  : require('./lib/joint'),
+  Faucet : require('./lib/faucet'),
+  limit  : require('./lib/limit')
 };
