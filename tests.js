@@ -72,7 +72,7 @@ module.exports = {
     });
 
     var coll = new CustomCollection();
-    LimitCollection(coll, 2, { throttle: false });
+    limitCollection(coll, 2, { throttle: false });
     coll.add(models['first']);
     coll.add(models['second']);
     coll.add(models['third']);
@@ -80,7 +80,7 @@ module.exports = {
     assert(!coll.get(1), 'oldest model should have been removed');
 
     var coll = new CustomCollection();
-    LimitCollection(coll, 2, { removeFirst: 'new', throttle: false });
+    limitCollection(coll, 2, { removeFirst: 'new', throttle: false });
     coll.add(models['fourth']);
     coll.add(models['third']);
     coll.add(models['second']);
@@ -106,8 +106,8 @@ module.exports = {
         coll2 = new CustomCollection,
         jc = new JointCollection;
 
-    LimitCollection(coll1, 3, { throttle: false });
-    LimitCollection(coll2, 3, { throttle: false });
+    limitCollection(coll1, 3, { throttle: false });
+    limitCollection(coll2, 3, { throttle: false });
     jc.connect(coll1);
     jc.connect(coll2);
 

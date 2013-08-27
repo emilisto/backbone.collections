@@ -1,6 +1,6 @@
 {
   "name": "backbone.collections",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Various useful primitives for composing and controlling Backbone collections",
   "main": "index.js",
   "scripts": {
