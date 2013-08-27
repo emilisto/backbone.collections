@@ -39,11 +39,17 @@ module.exports = {
       coll2.add(models['fourth']);
       assert(uc.get(4), 'adding a model to a source collection should make it present in the Union');
 
+      // Adding the same model to two connected collections
+      coll1.add(models['fourth']);
+      coll2.remove(models['fourth']);
+      assert(uc.get(4), "a model that's in two connected collections, but removed from one of them, should still be precent in the Union collection");
+
       uc.disconnect(coll1);
       assert(!uc.get(1) && !uc.get(2), 'disconnecting a source collection should remove all its members from the Union');
 
       uc.disconnectAll();
       assert(uc.length === 0, 'disconnectingAll should make the Union empty');
+
     },
 
     fetching: function() {
