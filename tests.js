@@ -65,6 +65,34 @@ module.exports = {
       uc.fetch();
 
       assert(fetch1.called && fetch2.called, 'running fetch() on a Union should run fetch() an all source collections'); 
+    },
+
+    sorting: function() {
+      var coll = new C([],{
+        comparator: 'id'
+      });
+      var uc = new Union({
+        comparator: 'id'
+      });
+
+      uc.connect(coll);
+
+      coll.add([models['fourth'], models['third'], models['second']]);
+
+      assert.equal(
+        coll.pluck('id').join(','),
+        uc.pluck('id').join(','),
+        'if the comparator is the same in Union and a sole connected collection, the ordering should be identical'
+      );
+
+      coll.add([models['first'], models['fifth']]);
+      assert.equal(
+        coll.pluck('id').join(','),
+        uc.pluck('id').join(','),
+        'also after models that belong both at the start and the end'
+      );
+
+
     }
 
   },
