@@ -1,0 +1,32 @@
+{
+  "name": "backbone.collections",
+  "version": "0.1.0",
+  "description": "Various useful primitives for composing and controlling Backbone collections",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --bail --ui exports --reporter spec tests.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/emilisto/backbone.collections.git"
+  },
+  "keywords": [
+    "backbone",
+    "collections",
+    "primitives",
+    "limit",
+    "join"
+  ],
+  "author": "Emil Stenqvist <emsten@gmail.com>",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/emilisto/backbone.collections/issues"
+  },
+  "devDependencies": {
+    "backbone": "~1.0.0",
+    "chai": "~1.7.2",
+    "mocha": "~1.12.0",
+    "sinon": "~1.7.3",
+    "underscore": "~1.5.1"
+  }
+}
